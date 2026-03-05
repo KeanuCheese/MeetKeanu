@@ -6,9 +6,9 @@
   <title>{Title}</title>
   <style>
     :root{
-      --intro-bg:url("https://raw.githubusercontent.com/KeanuCheese/Theme-K/main/Fondo_intro");
-      --intro-win:url("https://raw.githubusercontent.com/KeanuCheese/Theme-K/main/Imagen%20intro");
-      --os-wall:url("https://raw.githubusercontent.com/KeanuCheese/Theme-K/main/brokensc-1536x864.jpg");
+      --intro-bg:url("https://raw.githubusercontent.com/KeanuCheese/MeetKeanu/99c135aee0ab86f0ab9476646b3764184badc3cc/Fondo_intro");
+      --intro-win:url("https://raw.githubusercontent.com/KeanuCheese/MeetKeanu/99c135aee0ab86f0ab9476646b3764184badc3cc/Imagen%20intro");
+      --os-wall:url("https://raw.githubusercontent.com/KeanuCheese/MeetKeanu/99c135aee0ab86f0ab9476646b3764184badc3cc/brokensc-1536x864.jpg");
       --face:#c0c0c0; --light:#fff; --dark:#000; --mid:#808080; --hilight:#dfdfdf;
       --title:#000080; --title2:#1084d0;
     }
@@ -79,7 +79,7 @@
 <body>
 <div id="intro" class="intro">
   <div class="trailLayer" id="trail"></div>
-  <div id="introCard" class="introCard" tabindex="0"><img src="https://raw.githubusercontent.com/KeanuCheese/Theme-K/main/Imagen%20intro" alt="Intro"/><div class="introCredit">Made by Keanucheese</div></div>
+  <div id="introCard" class="introCard" tabindex="0"><img src="https://raw.githubusercontent.com/KeanuCheese/MeetKeanu/99c135aee0ab86f0ab9476646b3764184badc3cc/Imagen%20intro" alt="Intro"/><div class="introCredit">Made by Keanucheese</div></div>
 </div>
 <div id="cta" class="cta">CLICK TO CONTINUE</div>
 
@@ -120,7 +120,7 @@ let bag=[],last="",spawnAt=0;
 function refill(){bag=[...TRAIL_GIFS].sort(()=>Math.random()-.5)}
 function pick(){if(!bag.length)refill();let v=bag.pop();if(v===last&&bag.length)v=bag.pop();last=v;return v}
 refill();
-addEventListener('mousemove',e=>{if(intro.style.display==='none')return;cta.style.left=e.clientX+'px';cta.style.top=e.clientY+'px';cta.classList.add('on');if(performance.now()-spawnAt<300)return;spawnAt=performance.now();const im=new Image();im.className='trailItem';im.src=pick();im.style.left=e.clientX+'px';im.style.top=e.clientY+'px';im.style.setProperty('--r',`${Math.floor(Math.random()*46-23)}deg`);trail.appendChild(im);while(trail.children.length>180)trail.removeChild(trail.firstChild)});
+addEventListener('mousemove',e=>{if(intro.style.display==='none')return;cta.style.left=e.clientX+'px';cta.style.top=e.clientY+'px';cta.classList.add('on');if(performance.now()-spawnAt<300)return;spawnAt=performance.now();const im=new Image();im.className='trailItem';im.style.left=e.clientX+'px';im.style.top=e.clientY+'px';im.style.setProperty('--r',`${Math.floor(Math.random()*46-23)}deg`);im.loading='eager';im.decoding='async';im.onload=()=>{trail.appendChild(im);while(trail.children.length>180)trail.removeChild(trail.firstChild)};im.onerror=()=>{im.remove()};im.src=pick()});
 function showOS(){intro.style.display='none';cta.style.display='none';os.classList.add('on');}
 document.getElementById('introCard').addEventListener('click',showOS);
 document.getElementById('introCard').addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();showOS();}});
