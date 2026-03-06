@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en_US">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -480,7 +480,7 @@
       const root = document.getElementById('site-collab-odoo');
       if (!root) return;
 
-      const targetEmail = 'elKeanucheese@gmail.com';
+      const targetEmail = atob('ZWxrZWFudWNoZWVzZUBnbWFpbC5jb20=');
 
       const i18n = {
         es: {
@@ -614,6 +614,7 @@
       const modal = root.querySelector('#collabModal');
       const openButtons = [root.querySelector('#openCollab'), root.querySelector('#openCollabFromServices')];
       let currentLang = 'en';
+      const odooLangMap = { es: 'es_ES', en: 'en_US', pt: 'pt_BR' };
 
       function render(lang) {
         const t = i18n[lang] || i18n.en;
@@ -639,7 +640,7 @@
         root.querySelector('#sendCollab').textContent = t.send;
         root.querySelector('#closeSuccess').textContent = 'OK';
 
-        document.documentElement.lang = lang;
+        document.documentElement.lang = odooLangMap[lang] || 'en_US';
       }
 
       function openModal() {
@@ -662,19 +663,44 @@
         root.classList.toggle('rainbow-on');
       });
 
-      root.querySelector('#sendCollab').addEventListener('click', () => {
+      root.querySelector('#sendCollab').addEventListener('click', async () => {
         const idea = root.querySelector('#projectIdea').value.trim();
         const type = root.querySelector('#collabType').value.trim();
         const budget = root.querySelector('#budgetExchange').value.trim();
         const contact = root.querySelector('#contactInfo').value.trim();
 
-        const subject = encodeURIComponent('Collab Request - Site Collab');
-        const body = encodeURIComponent(
-          `Language: ${currentLang}\n\nProject idea: ${idea}\nType: ${type}\nBudget/Exchange: ${budget}\nContact: ${contact}`
-        );
+        const recipient = targetEmail;
 
-        window.location.href = `mailto:${targetEmail}?subject=${subject}&body=${body}`;
-        modal.classList.add('success');
+        const payload = {
+          _subject: 'Collab Request - Site Collab',
+          language: currentLang,
+          project_idea: idea,
+          collaboration_type: type,
+          budget_exchange: budget,
+          contact,
+          _template: 'table'
+        };
+
+        try {
+          const response = await fetch(`https://formsubmit.co/ajax/${recipient}`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json'
+            },
+            body: JSON.stringify(payload)
+          });
+
+          if (!response.ok) throw new Error('send_failed');
+          modal.classList.add('success');
+        } catch (error) {
+          const subject = encodeURIComponent('Collab Request - Site Collab');
+          const body = encodeURIComponent(
+            `Language: ${currentLang}\n\nProject idea: ${idea}\nType: ${type}\nBudget/Exchange: ${budget}\nContact: ${contact}`
+          );
+          window.location.href = `mailto:${targetEmail}?subject=${subject}&body=${body}`;
+          modal.classList.add('success');
+        }
       });
 
       modal.addEventListener('click', (event) => {
